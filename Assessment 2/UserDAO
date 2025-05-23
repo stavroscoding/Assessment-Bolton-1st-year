@@ -1,0 +1,42 @@
+package hangman;
+
+import java.sql.*;
+
+/** CRUD for users: login, register, updateScore */
+public class UserDAO {
+    public User login(String username, String password) throws SQLException {
+        String sql = "SELECT * FROM users WHERE username=? AND password=?";
+        try (PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getInt("score")
+                );
+            }
+        }
+        return null;
+    }
+
+    public boolean register(String username, String password) throws SQLException {
+        String sql = "INSERT INTO users(username,password) VALUES(?,?)";
+        try (PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, password);
+            return ps.executeUpdate() == 1;
+        }
+    }
+
+    public void updateScore(User user) throws SQLException {
+        String sql = "UPDATE users SET score=? WHERE id=?";
+        try (PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, user.getScore());
+            ps.setInt(2, user.getId());
+            ps.executeUpdate();
+        }
+    }
+}
