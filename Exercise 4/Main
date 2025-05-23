@@ -1,6 +1,35 @@
 
-public class Main {
-    public static void main(String[] args) {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
+public class Main {
+    // Check if any car in the list has the given plate
+    public static boolean hasPlate(List<Car> list, String target) {
+        return list.stream()
+                .anyMatch(car -> car.getPlate().equalsIgnoreCase(target));
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        List<Car> list = new ArrayList<>();
+
+        System.out.println("Enter details for 3 cars (plate and color):");
+        for (int i = 0; i < 3; i++) {
+            System.out.print("Plate: ");
+            String plate = in.nextLine().trim();
+            System.out.print("Color: ");
+            String color = in.nextLine().trim();
+            list.add(new Car(plate, color));
+        }
+
+        System.out.println("\nYou entered:");
+        list.forEach(System.out::println);
+
+        System.out.print("\nEnter a plate to search: ");
+        String search = in.nextLine().trim();
+
+        System.out.println(hasPlate(list, search));
+        in.close();
     }
 }
