@@ -1,0 +1,36 @@
+// File: LeaderboardPane.java
+package hangman;
+
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import java.sql.SQLException;
+import java.util.List;
+
+public class LeaderboardPane extends VBox {
+    private HangmanApp app;
+
+    public LeaderboardPane(HangmanApp app) {
+        this.app = app;
+        setSpacing(10);
+        setPadding(new Insets(20));
+
+        Label title = new Label("Leaderboard");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        ListView<String> listView = new ListView<>();
+        try {
+            List<User> top = new LeaderboardDAO().getTop(10);
+            for (User u : top) {
+                listView.getItems().add(u.getUsername() + " : " + u.getScore());
+            }
+        } catch (SQLException e) {
+            listView.getItems().add("Error loading leaderboard");
+        }
+
+        Button back = new Button("Back");
+        back.setOnAction(e -> app.showGame());
+
+        getChildren().addAll(title, listView, back);
+    }
+}
