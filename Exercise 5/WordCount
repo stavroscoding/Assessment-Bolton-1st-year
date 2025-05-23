@@ -1,0 +1,58 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * WordCount.java
+ *
+ * This program reads a text file, counts how many times each word appears,
+ * and prints the results in the format: "word"->count.
+ *
+ * Hi, Mr.Mavros,  Setup Instructions:
+ * 1. Make sure Java (JDK) is installed and on your system PATH.
+ * 2. Place "A Journey into the Interior of the Earth.txt" in the Desktop folder
+ *    or update the `filePath` variable below to the correct location.
+ * 3. Compile with: javac WordCount.java
+ * 4. Run with: java WordCount
+ */
+public class WordCount {
+    public static void main(String[] args) {
+        // --------------- Configuration ------------------
+        // Adjust this if your file is elsewhere.
+        String home = System.getProperty("user.home");
+        String filePath = home + "/Desktop/A Journey into the Interior of the Earth.txt";
+
+        // Map to store word -> occurrence count
+        Map<String, Integer> wordCounts = new HashMap<>();
+
+        // ----------------- Reading File ------------------
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                // Split on whitespace (spaces, tabs)
+                String[] words = line.split("\\s+");
+                for (String word : words) {
+                    // Normalize: remove non-letters at ends, lowercase, trim
+                    word = word.replaceAll("^[^a-zA-Z]+|[^a-zA-Z]+$", "")
+                            .toLowerCase().trim();
+                    if (word.isEmpty()) continue; // Skip empty tokens
+
+                    // Increment count (first time defaults to 0)
+                    wordCounts.put(word, wordCounts.getOrDefault(word, 0) + 1);
+                }
+            }
+        } catch (IOException e) {
+            // If the file isn't found or readable, report error and exit
+            System.err.println("Error reading file: " + e.getMessage());
+            return;
+        }
+
+        // -------------- Output Results ------------------
+        // Print each word and its count. Example: "tool"->4
+        for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
+            System.out.println("\"" + entry.getKey() + "\"->" + entry.getValue());
+        }
+    }
+}
