@@ -1,0 +1,77 @@
+package hangman;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Scanner;
+
+/** Console UI: login/register, play loop, leaderboard */
+public class HangmanConsole {
+    private static Scanner scanner     = new Scanner(System.in);
+    private static UserDAO userDAO     = new UserDAO();
+    private static LeaderboardDAO lbDAO= new LeaderboardDAO();
+
+    public static void main(String[] args) throws SQLException {
+        System.out.println(">> HangmanConsole starting up! <<");
+
+        // --- Login / Register loop ---
+        User user = null;
+        while (user == null) {
+            System.out.println("1) Login     2) Register");
+            System.out.print("> "); System.out.flush();
+            String opt = scanner.nextLine().trim();
+
+            System.out.print("Username: "); String u = scanner.nextLine().trim();
+            System.out.print("Password: "); String p = scanner.nextLine().trim();
+
+            if ("1".equals(opt)) {
+                user = userDAO.login(u, p);
+            } else if ("2".equals(opt)) {
+                if (userDAO.register(u, p)) {
+                    user = userDAO.login(u, p);
+                } else {
+                    System.out.println("Registration failed; try a different username.");
+                }
+            }
+            if (user == null) {
+                System.out.println("Invalid credentials. Try again.\n");
+            }
+        }
+
+        System.out.printf("Welcome, %s! Your score: %d%n",
+                user.getUsername(), user.getScore());
+
+        // --- Game loop ---
+        boolean play = true;
+        while (play) {
+            HangmanGame game = new HangmanGame(WordCollection.getRandomWord());
+            while (!game.isHanged() && !game.isFound()) {
+                System.out.println("Word: " + game.getMasked());
+                System.out.print("Guess a letter: "); System.out.flush();
+                char c = scanner.nextLine().charAt(0);
+                if (game.guess(c)) {
+                    System.out.println("Correct!");
+                } else {
+                    System.out.println("Wrong (" + game.wrongCount() + "/6)");
+                }
+            }
+            if (game.isFound()) {
+                System.out.println("You found it! +1 point.");
+                user.setScore(user.getScore() + 1);
+            } else {
+                System.out.println("Hanged! The word was: " + game.getSecret());
+            }
+            System.out.println("Current score: " + user.getScore());
+            System.out.print("Play again? (y/n): "); System.out.flush();
+            play = scanner.nextLine().trim().equalsIgnoreCase("y");
+        }
+
+        // --- Persist score & show leaderboard ---
+        userDAO.updateScore(user);
+        System.out.println("\n--- Leaderboard ---");
+        List<User> top = lbDAO.getTop(5);
+        for (User u : top) {
+            System.out.printf("%-15s %3d%n", u.getUsername(), u.getScore());
+        }
+        System.out.println("Goodbye!");
+    }
+}
