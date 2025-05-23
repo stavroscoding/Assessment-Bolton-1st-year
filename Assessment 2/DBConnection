@@ -1,0 +1,33 @@
+package hangman;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+/**
+ * Simplified: driver and URL are hard-coded here.
+ */
+public class DBConnection {
+    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/hangman_db?useSSL=false&serverTimezone=UTC"
+            ;
+    private static final String USER = "root";                  // your MySQL user
+    private static final String PASS = "1qaz2wsx";   // your MySQL password
+
+    static {
+        try {
+            Class.forName(DRIVER);
+        } catch (ClassNotFoundException e) {
+            System.err.println("ERROR: MySQL Driver not found.");
+            e.printStackTrace();
+        }
+    }
+
+    private DBConnection() { }
+
+    public static Connection getConnection() throws SQLException {
+        // If you’d cached a Connection, you could reuse it here—but
+        // for simplicity we just open a fresh one each time:
+        return DriverManager.getConnection(URL, USER, PASS);
+    }
+}
