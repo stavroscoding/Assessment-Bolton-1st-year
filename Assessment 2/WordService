@@ -1,0 +1,28 @@
+package hangman;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+/**
+ * Fetches a random word from an external API.
+ * Replace API_URL with the actual endpoint when you have it.
+ */
+public class WordService {
+    private static final String API_URL = "https://api.example.com/random-word";
+    private static final HttpClient client = HttpClient.newHttpClient();
+
+    /**
+     * Calls the external API and returns a lowercase word.
+     */
+    public static String fetchWord() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(API_URL))
+                .GET()
+                .build();
+        HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return resp.body().trim().toLowerCase();
+    }
+}
