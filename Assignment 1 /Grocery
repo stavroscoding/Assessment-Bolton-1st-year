@@ -1,0 +1,21 @@
+import java.time.LocalDate;
+
+public class Grocery extends Item {
+    private double weight;
+    private LocalDate expiry;
+
+    public Grocery(String name, double price, double weight, LocalDate expiry) {
+        super(name, price);
+        this.weight = weight;
+        this.expiry = expiry;
+    }
+
+    public void setWeight(double weight) { this.weight = weight; }
+    public void setExpiry(LocalDate date) { this.expiry = date; }
+
+    @Override
+    public String toString() {
+        return String.format("#%d %s ($%.2f) [Grocery: weight=%.2fkg, expires=%s]",
+                id, name, price, weight, expiry);
+    }
+}
