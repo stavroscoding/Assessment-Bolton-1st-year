@@ -1,0 +1,65 @@
+import java.time.LocalDate;
+import java.util.List;
+
+public class SampleData {
+    public static Inventory getSampleInventory() {
+        Inventory inv = new Inventory();
+        inv.add(new Electronics("Smartphone", 699.99, "Acme", 24));
+        inv.add(new Electronics("Laptop", 1299.49, "TechCorp", 12));
+        inv.add(new Clothing("T-Shirt", 19.99,
+                List.of("S","M","L"), "Cotton", List.of("Red","Blue")));
+        inv.add(new Clothing("Jeans", 49.99,
+                List.of("32","34","36"), "Denim", List.of("Black","Blue")));
+        inv.add(new Grocery("Milk", 2.49, 1.0, LocalDate.now().plusDays(7)));
+        inv.add(new Grocery("Bread", 1.99, 0.5, LocalDate.now().plusDays(3)));
+        return inv;
+    }
+}
+
+
+/*
+Menu: 1)List 2)Find 3)Add 4)Update 5)Exit
+Choose: 1
+#1 Smartphone ($699.99) [Electronics: brand=Acme, warranty=24mo]
+#2 Laptop ($1299.49) [Electronics: brand=TechCorp, warranty=12mo]
+#3 T-Shirt ($19.99) [Clothing: sizes=[S, M, L], material=Cotton, colors=[Red, Blue]]
+#4 Jeans ($49.99) [Clothing: sizes=[32, 34, 36], material=Denim, colors=[Black, Blue]]
+#5 Milk ($2.49) [Grocery: weight=1.00kg, expires=2025-05-30]
+#6 Bread ($1.99) [Grocery: weight=0.50kg, expires=2025-05-26]
+
+Menu: 1)List 2)Find 3)Add 4)Update 5)Exit
+Choose: 2
+Name (or blank): Shirt
+Type [Electronics/Clothing/Grocery] (or blank): Clothing
+#3 T-Shirt ($19.99) [Clothing: sizes=[S, M, L], material=Cotton, colors=[Red, Blue]]
+
+Menu: 1)List 2)Find 3)Add 4)Update 5)Exit
+Choose: 3
+Type [e/c/g]: g
+Name: Eggs
+Price: 3.50
+Weight kg: 0.60
+Expiry YYYY-MM-DD: 2025-06-05
+Added
+
+Menu: 1)List 2)Find 3)Add 4)Update 5)Exit
+Choose: 1
+#1 Smartphone ($699.99) [Electronics: brand=Acme, warranty=24mo]
+#2 Laptop ($1299.49) [Electronics: brand=TechCorp, warranty=12mo]
+#3 T-Shirt ($19.99) [Clothing: sizes=[S, M, L], material=Cotton, colors=[Red, Blue]]
+#4 Jeans ($49.99) [Clothing: sizes=[32, 34, 36], material=Denim, colors=[Black, Blue]]
+#5 Milk ($2.49) [Grocery: weight=1.00kg, expires=2025-05-30]
+#6 Bread ($1.99) [Grocery: weight=0.50kg, expires=2025-05-26]
+#7 Eggs ($3.50) [Grocery: weight=0.60kg, expires=2025-06-05]
+
+Menu: 1)List 2)Find 3)Add 4)Update 5)Exit
+Choose: 4
+ID: 7
+Field: price
+Value: 3.75
+Done
+
+Menu: 1)List 2)Find 3)Add 4)Update 5)Exit
+Choose: 5
+Thank you for using our service!
+ */
