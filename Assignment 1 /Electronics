@@ -1,0 +1,19 @@
+public class Electronics extends Item {
+    private String brand;
+    private int warranty;  // months
+
+    public Electronics(String name, double price, String brand, int warranty) {
+        super(name, price);
+        this.brand = brand;
+        this.warranty = warranty;
+    }
+
+    public void setBrand(String brand) { this.brand = brand; }
+    public void setWarranty(int months) { this.warranty = months; }
+
+    @Override
+    public String toString() {
+        return String.format("#%d %s ($%.2f) [Electronics: brand=%s, warranty=%dmo]",
+                id, name, price, brand, warranty);
+    }
+}
