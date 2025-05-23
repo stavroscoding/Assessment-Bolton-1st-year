@@ -1,0 +1,28 @@
+package hangman;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+/** Fetches top users by score */
+public class LeaderboardDAO {
+    public List<User> getTop(int limit) throws SQLException {
+        String sql = "SELECT * FROM users ORDER BY score DESC LIMIT ?";
+        List<User> list = new ArrayList<>();
+        try (PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, limit);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new User(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getInt("score")
+                ));
+            }
+        }
+        return list;
+    }
+}
+
+
