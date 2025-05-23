@@ -1,0 +1,88 @@
+// File: GamePane.java
+package hangman;
+
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import java.io.IOException;
+
+public class GamePane extends VBox {
+    private HangmanApp app;
+    private User user;
+    private HangmanGame game;
+
+    private Label wordLabel;
+    private Label statusLabel;
+    private TextField guessField;
+    private Button guessBtn, playAgainBtn, logoutBtn, lbBtn;
+
+    public GamePane(HangmanApp app, User user) {
+        this.app = app;
+        this.user = user;
+        setSpacing(15);
+        setPadding(new Insets(20));
+
+        wordLabel = new Label();
+        wordLabel.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 24px;");
+        statusLabel = new Label();
+
+        loadNewGame();
+
+        guessField = new TextField();
+        guessField.setMaxWidth(50);
+        guessBtn   = new Button("Guess");
+        playAgainBtn = new Button("Play Again");
+        logoutBtn    = new Button("Logout");
+        lbBtn        = new Button("Leaderboard");
+
+        HBox inputBox = new HBox(10, new Label("Letter:"), guessField, guessBtn);
+        inputBox.setPadding(new Insets(10,0,0,0));
+
+        HBox controlBox = new HBox(10, playAgainBtn, lbBtn, logoutBtn);
+        controlBox.setPadding(new Insets(10,0,0,0));
+
+        getChildren().addAll(wordLabel, statusLabel, inputBox, controlBox);
+
+        guessBtn.setOnAction(e -> handleGuess());
+        playAgainBtn.setOnAction(e -> loadNewGame());
+        logoutBtn.setOnAction(e -> app.logout());
+        lbBtn.setOnAction(e -> app.showLeaderboard());
+    }
+
+    private void loadNewGame() {
+        try {
+            String secret = WordService.fetchWord();
+            game = new HangmanGame(secret);
+            updateView();
+        } catch (IOException|InterruptedException e) {
+            statusLabel.setText("Error fetching word");
+        }
+    }
+
+    private void handleGuess() {
+        String t = guessField.getText();
+        if (t.isEmpty()) return;
+        char c = t.charAt(0);
+        boolean ok = game.guess(c);
+        if (ok && game.isFound()) {
+            user.setScore(user.getScore()+1);
+            showAlert("You found it! Score: " + user.getScore());
+        } else if (!ok && game.isHanged()) {
+            showAlert("Hanged! Word was: " + game.getSecret());
+        }
+        updateView();
+        guessField.clear();
+    }
+
+    private void updateView() {
+        wordLabel.setText(game.getMasked());
+        statusLabel.setText("Wrong: " + game.wrongCount() + "/6 | Score: " + user.getScore());
+    }
+
+    private void showAlert(String msg) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK);
+        a.showAndWait();
+    }
+}
+
+
