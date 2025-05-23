@@ -1,0 +1,47 @@
+package hangman;
+
+import java.util.HashSet;
+import java.util.Set;
+
+/** Core hangman logic: mask, guesses, win/lose */
+public class HangmanGame {
+    private String secret;
+    private Set<Character> correct = new HashSet<>();
+    private Set<Character> wrong   = new HashSet<>();
+    private static final int MAX_WRONG = 6;
+
+    public HangmanGame(String secret) {
+        this.secret = secret.toLowerCase();
+    }
+
+    public String getMasked() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(secret.charAt(0));
+        for (int i = 1; i < secret.length() - 1; i++) {
+            char c = secret.charAt(i);
+            sb.append(correct.contains(c) ? c : '-');
+        }
+        sb.append(secret.charAt(secret.length() - 1));
+        return sb.toString();
+    }
+
+    public boolean guess(char c) {
+        c = Character.toLowerCase(c);
+        if (secret.indexOf(c) >= 0) {
+            correct.add(c);
+            return true;
+        } else {
+            wrong.add(c);
+            return false;
+        }
+    }
+
+    public boolean isHanged() { return wrong.size() >= MAX_WRONG; }
+    public boolean isFound() {
+        for (int i = 1; i < secret.length() - 1; i++)
+            if (!correct.contains(secret.charAt(i))) return false;
+        return true;
+    }
+    public int wrongCount() { return wrong.size(); }
+    public String getSecret() { return secret; }
+}
