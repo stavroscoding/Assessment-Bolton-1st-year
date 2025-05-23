@@ -1,0 +1,73 @@
+package hangman;
+
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+
+// Make sure you have this import:
+import hangman.UserDAO;
+
+public class LoginPane extends VBox {
+    private HangmanApp app;
+    private TextField userField;
+    private PasswordField passField;
+    private UserDAO userDAO = new UserDAO();
+
+    public LoginPane(HangmanApp app) {
+        this.app = app;
+        setSpacing(10);
+        setPadding(new Insets(20));
+
+        Label title = new Label("Hangman Login");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        userField = new TextField();
+        passField = new PasswordField();
+
+        Button loginBtn = new Button("Login");
+        Button regBtn   = new Button("Register");
+
+        getChildren().addAll(
+                title,
+                new Label("Username:"), userField,
+                new Label("Password:"), passField,
+                new HBox(10, loginBtn, regBtn)
+        );
+
+        loginBtn.setOnAction(e -> handleLogin());
+        // Hook up the Register button to handleRegister()
+        regBtn.setOnAction(e -> handleRegister());
+    }
+
+    private void handleLogin() {
+        try {
+            User user = userDAO.login(userField.getText(), passField.getText());
+            if (user != null) {
+                app.onLoginSuccess(user);
+            } else {
+                showAlert("Invalid credentials");
+            }
+        } catch (Exception ex) {
+            showAlert("DB error: " + ex.getMessage());
+        }
+    }
+
+    // This must exist too:
+    private void handleRegister() {
+        try {
+            boolean ok = userDAO.register(userField.getText(), passField.getText());
+            if (ok) {
+                showAlert("Registration successful. Please login.");
+            } else {
+                showAlert("Username already taken.");
+            }
+        } catch (Exception ex) {
+            showAlert("DB error: " + ex.getMessage());
+        }
+    }
+
+    private void showAlert(String msg) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK);
+        a.showAndWait();
+    }
+}
