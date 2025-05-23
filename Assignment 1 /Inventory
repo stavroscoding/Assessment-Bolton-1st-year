@@ -1,0 +1,64 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.time.LocalDate;
+
+public class Inventory {
+    private final List<Item> items = new ArrayList<>();
+
+    public void add(Item item) {
+        items.add(item);
+    }
+
+    public List<Item> getAll() {
+        return items;
+    }
+
+    public List<Item> find(String nameFilter, String typeFilter) {
+        return items.stream()
+                .filter(i -> nameFilter == null ||
+                        i.getName().toLowerCase().contains(nameFilter.toLowerCase()))
+                .filter(i -> typeFilter == null ||
+                        i.getClass().getSimpleName().equalsIgnoreCase(typeFilter))
+                .collect(Collectors.toList());
+    }
+
+    public boolean update(int id, String field, String value) {
+        for (Item i : items) {
+            if (i.getId() == id) {
+                try {
+                    switch (field.toLowerCase()) {
+                        case "name": i.setName(value); break;
+                        case "price": i.setPrice(Double.parseDouble(value)); break;
+                        case "brand": if (i instanceof Electronics)
+                            ((Electronics)i).setBrand(value);
+                            break;
+                        case "warranty": if (i instanceof Electronics)
+                            ((Electronics)i).setWarranty(Integer.parseInt(value));
+                            break;
+                        case "sizes": if (i instanceof Clothing)
+                            ((Clothing)i).setSizes(List.of(value.split(",")));
+                            break;
+                        case "material": if (i instanceof Clothing)
+                            ((Clothing)i).setMaterial(value);
+                            break;
+                        case "colors": if (i instanceof Clothing)
+                            ((Clothing)i).setColors(List.of(value.split(",")));
+                            break;
+                        case "weight": if (i instanceof Grocery)
+                            ((Grocery)i).setWeight(Double.parseDouble(value));
+                            break;
+                        case "expiry": if (i instanceof Grocery)
+                            ((Grocery)i).setExpiry(LocalDate.parse(value));
+                            break;
+                        default: return false;
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+}
