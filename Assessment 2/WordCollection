@@ -1,0 +1,14 @@
+package hangman;
+
+import java.util.Random;
+
+/** Static word list; swap to an API call as needed */
+public class WordCollection {
+    private static final String[] WORDS = {
+            "mississippi","java","encapsulation","inheritance","polymorphism"
+    };
+
+    public static String getRandomWord() {
+        return WORDS[new Random().nextInt(WORDS.length)];
+    }
+}
