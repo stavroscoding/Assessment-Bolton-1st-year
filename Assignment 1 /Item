@@ -1,0 +1,23 @@
+import java.util.concurrent.atomic.AtomicInteger;
+
+public abstract class Item {
+    private static final AtomicInteger COUNTER = new AtomicInteger(1);
+    protected final int id;
+    protected String name;
+    protected double price;
+
+    public Item(String name, double price) {
+        this.id = COUNTER.getAndIncrement();
+        this.name = name;
+        this.price = price;
+    }
+
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
+
+    @Override
+    public abstract String toString();
+}
