@@ -1,0 +1,57 @@
+// File: HangmanApp.java
+package hangman;
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class HangmanApp extends Application {
+    private Stage primaryStage;
+    private User currentUser;
+
+    @Override
+    public void start(Stage stage) {
+        this.primaryStage = stage;
+        showLogin();
+        stage.setTitle("Hangman");
+        stage.show();
+    }
+
+    public void showLogin() {
+        LoginPane loginPane = new LoginPane(this);
+        Scene scene = new Scene(loginPane, 400, 300);
+        primaryStage.setScene(scene);
+    }
+
+    public void onLoginSuccess(User user) {
+        this.currentUser = user;
+        showGame();
+    }
+
+    public void showGame() {
+        GamePane gamePane = new GamePane(this, currentUser);
+        Scene scene = new Scene(gamePane, 600, 400);
+        primaryStage.setScene(scene);
+    }
+
+    public void showLeaderboard() {
+        LeaderboardPane lbPane = new LeaderboardPane(this);
+        Scene scene = new Scene(lbPane, 400, 300);
+        primaryStage.setScene(scene);
+    }
+
+    public void logout() {
+        // update score
+        try {
+            new UserDAO().updateScore(currentUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        currentUser = null;
+        showLogin();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
