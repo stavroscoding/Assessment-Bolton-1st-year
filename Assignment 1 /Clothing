@@ -1,0 +1,25 @@
+import java.util.List;
+
+public class Clothing extends Item {
+    private List<String> sizes;
+    private String material;
+    private List<String> colors;
+
+    public Clothing(String name, double price,
+                    List<String> sizes, String material, List<String> colors) {
+        super(name, price);
+        this.sizes = sizes;
+        this.material = material;
+        this.colors = colors;
+    }
+
+    public void setSizes(List<String> sizes) { this.sizes = sizes; }
+    public void setMaterial(String material) { this.material = material; }
+    public void setColors(List<String> colors) { this.colors = colors; }
+
+    @Override
+    public String toString() {
+        return String.format("#%d %s ($%.2f) [Clothing: sizes=%s, material=%s, colors=%s]",
+                id, name, price, sizes, material, colors);
+    }
+}
