@@ -1,0 +1,13 @@
+// TestConnection.java (also in package hangman)
+package hangman;
+import java.sql.Connection;
+public class TestConnection {
+    public static void main(String[] args) {
+        try (Connection c = DBConnection.getConnection()) {
+            System.out.println("✅ Connected to MySQL!");
+        } catch (Exception e) {
+            System.err.println("❌ Connection failed:");
+            e.printStackTrace();
+        }
+    }
+}
