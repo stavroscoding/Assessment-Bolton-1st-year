@@ -1,0 +1,77 @@
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+    // Preload sample data into inventory
+    private static final Inventory inv = SampleData.getSampleInventory();
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("\nMenu: 1)List 2)Find 3)Add 4)Update 5)Exit");
+            System.out.print("Choose: ");
+            String choice = scanner.nextLine();
+            switch (choice) {
+                case "1": listAll(); break;
+                case "2": findItems(); break;
+                case "3": addItem(); break;
+                case "4": updateItem(); break;
+                case "5": System.out.println("Thank you for using our service!");
+                    scanner.close();
+                    return;
+                default: System.out.println("Invalid");
+            }
+        }
+    }
+
+    private static void listAll() {
+        inv.getAll().forEach(System.out::println);
+    }
+
+    private static void findItems() {
+        System.out.print("Name (or blank): ");
+        String name = scanner.nextLine().trim(); name = name.isEmpty()? null : name;
+        System.out.print("Type [Electronics/Clothing/Grocery] (or blank): ");
+        String type = scanner.nextLine().trim(); type = type.isEmpty()? null : type;
+        List<Item> results = inv.find(name, type);
+        results.forEach(System.out::println);
+    }
+
+    private static void addItem() {
+        System.out.print("Type [e/c/g]: ");
+        String t = scanner.nextLine().toLowerCase();
+        System.out.print("Name: "); String name = scanner.nextLine();
+        System.out.print("Price: "); double price = Double.parseDouble(scanner.nextLine());
+        switch (t) {
+            case "e":
+                System.out.print("Brand: "); String brand = scanner.nextLine();
+                System.out.print("Warranty mo: "); int warranty = Integer.parseInt(scanner.nextLine());
+                inv.add(new Electronics(name, price, brand, warranty));
+                break;
+            case "c":
+                System.out.print("Sizes (,): "); List<String> sizes = List.of(scanner.nextLine().split(","));
+                System.out.print("Material: "); String material = scanner.nextLine();
+                System.out.print("Colors (,): "); List<String> colors = List.of(scanner.nextLine().split(","));
+                inv.add(new Clothing(name, price, sizes, material, colors));
+                break;
+            case "g":
+                System.out.print("Weight kg: "); double weight = Double.parseDouble(scanner.nextLine());
+                System.out.print("Expiry YYYY-MM-DD: "); LocalDate expiry = LocalDate.parse(scanner.nextLine());
+                inv.add(new Grocery(name, price, weight, expiry));
+                break;
+            default:
+                System.out.println("Unknown");
+                return;
+        }
+        System.out.println("Added");
+    }
+
+    private static void updateItem() {
+        System.out.print("ID: "); int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("Field: "); String field = scanner.nextLine();
+        System.out.print("Value: "); String value = scanner.nextLine();
+        boolean ok = inv.update(id, field, value);
+        System.out.println(ok ? "Done" : "Fail");
+    }
+}
