@@ -1,0 +1,26 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+// Simple Car class with auto-incrementing id, plate and color
+class Car {
+    private static int nextId = 1;
+    private final int id;
+    private final String plate;
+    private final String color;
+
+    public Car(String plate, String color) {
+        this.id = nextId++;
+        this.plate = plate;
+        this.color = color;
+    }
+
+    public String getPlate() {
+        return plate;
+    }
+
+    @Override
+    public String toString() {
+        return "Car { id=" + id + ", plate='" + plate + "', color='" + color + "' }";
+    }
+}
