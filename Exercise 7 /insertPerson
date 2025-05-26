@@ -1,0 +1,23 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+/**
+ * Inserts a new Person into the database.
+ */
+public void insertPerson(com.example.model.Person person) throws SQLException {
+    String sql = "INSERT INTO person (id, name, age) VALUES (?, ?, ?)";
+
+    try (Connection conn = com.example.utils.DBUtils.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, person.getId());
+        ps.setString(2, person.getName());
+        ps.setInt(3, person.getAge());
+
+        ps.executeUpdate();
+    }
+}
+
+
+public void main() {
+}
