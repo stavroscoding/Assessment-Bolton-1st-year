@@ -1,0 +1,35 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Retrieves all persons whose names start with the given prefix.
+ */
+public List<com.example.model.Person> getPersons_NameStartsWith(String prefix) throws SQLException {
+    String sql = "SELECT id, name, age FROM person WHERE name LIKE ?";
+    List<com.example.model.Person> results = new ArrayList<>();
+
+    try (Connection conn = com.example.utils.DBUtils.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, prefix + "%");
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int age = rs.getInt("age");
+                results.add(new com.example.model.Person(id, name, age));
+            }
+        }
+    }
+
+    return results;
+}
+
+public void main() {
+}
+
+
