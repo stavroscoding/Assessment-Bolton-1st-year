@@ -1,0 +1,30 @@
+package com.example;
+
+import com.example.dao.IPersonDAO;
+import com.example.dao.PersonDAOImpl;
+import com.example.model.Person;
+
+import java.sql.SQLException;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        IPersonDAO dao = new PersonDAOImpl();
+        try {
+            // Insert sample data
+            dao.insertPerson(new Person(1, "Alice", 30));
+            dao.insertPerson(new Person(2, "Bob", 25));
+
+            // Query by prefix
+            List<Person> results = dao.findByNamePrefix("A");
+            results.forEach(System.out::println);
+
+            // Delete
+            boolean deleted = dao.deletePersonById(2);
+            System.out.println("Deleted Bob? " + deleted);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
