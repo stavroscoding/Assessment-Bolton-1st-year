@@ -1,0 +1,23 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+/**
+ * Deletes a person by their ID.
+ * @return true if a row was deleted, false otherwise.
+ */
+public boolean deletePersonById(int id) throws SQLException {
+    String sql = "DELETE FROM person WHERE id = ?";
+
+    try (Connection conn = com.example.utils.DBUtils.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, id);
+
+        int affected = ps.executeUpdate();
+        return affected > 0;
+    }
+}
+
+public void main() {
+}
+
