@@ -1,0 +1,56 @@
+package com.example.dao;
+
+import com.example.model.Person;
+import com.example.utils.DBUtils;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PersonDAOImpl implements com.example.dao.IPersonDAO {
+
+    private static final String INSERT_SQL = "INSERT INTO person (id, name, age) VALUES (?, ?, ?)";
+    private static final String DELETE_SQL = "DELETE FROM person WHERE id = ?";
+    private static final String SELECT_SQL = "SELECT id, name, age FROM person WHERE name LIKE ?";
+
+    @Override
+    public void insertPerson(Person person) throws SQLException {
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(INSERT_SQL)) {
+
+            ps.setInt(1, person.getId());
+            ps.setString(2, person.getName());
+            ps.setInt(3, person.getAge());
+            ps.executeUpdate();
+        }
+    }
+
+    @Override
+    public boolean deletePersonById(int id) throws SQLException {
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
+
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    @Override
+    public List<Person> findByNamePrefix(String prefix) throws SQLException {
+        List<Person> list = new ArrayList<>();
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SELECT_SQL)) {
+
+            ps.setString(1, prefix + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Person(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getInt("age")
+                    ));
+                }
+            }
+        }
+        return list;
+    }
