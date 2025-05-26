@@ -1,0 +1,11 @@
+package com.example.dao;
+
+import com.example.model.Person;
+import java.sql.SQLException;
+import java.util.List;
+
+public interface IPersonDAO {
+    void insertPerson(Person person) throws SQLException;
+    boolean deletePersonById(int id) throws SQLException;
+    List<Person> findByNamePrefix(String prefix) throws SQLException;
+}
